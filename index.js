@@ -3,6 +3,8 @@ window.init = _ => {
     let map;
     let centerMarker;
     const clickMarkers = [];
+    const searchedPlaced = [];
+    const geocoder = new google.maps.Geocoder();
 
     getUserLocation().then(
         ({ coords }) => createMap(coords), // resolve
@@ -50,4 +52,37 @@ window.init = _ => {
             // tells the map that it doesn't need to continue rendering the markers
             .forEach(marker => marker.setMap(null))
     )
+
+    document.getElementById('address-search-form').addEventListener('submit', e => {
+        // no more page refresh
+        e.preventDefault();
+        const searchInput = document.getElementById('address-search-input');
+
+        geocoder.geocode(
+            {
+                address: searchInput.value
+            },
+            result => {
+                try {
+                    if (!result[0]) throw 'Could not find that place'
+                    const place = {
+                        address: result[0].formatted_address,
+                        position: result[0].geometry.location
+                    }
+                    if (searchedPlaced.some(p => p.address == place.address)) throw 'That place has already been added'
+                    searchedPlaced.push({
+                        ...place,
+                        marker: new google.maps.Marker({
+                            position: place.position,
+                            map: map
+                        })
+                    })
+                    console.log('Successfully added place:', { place })
+                } catch (e) {
+                    console.error(`Error adding place '${searchInput.value}':`, e)
+                }
+                searchInput.value = ''
+            }
+        )
+    })
 }
