@@ -1,6 +1,8 @@
 window.init = _ => {
     console.log('google maps loaded');
     let map;
+    let centerMarker;
+    const clickMarkers = [];
 
     getUserLocation().then(
         ({ coords }) => createMap(coords), // resolve
@@ -22,5 +24,22 @@ window.init = _ => {
             zoom: 13,
             disableDefaultUI: true,
         });
+
+        map.addListener('click', ({ latLng }) =>
+            clickMarkers.push(
+                new google.maps.Marker({
+                    map: map,
+                    position: latLng
+                })
+            )
+        )
+
+        centerMarker = new google.maps.Marker({
+            map: map,
+            position: {
+                lat: latitude,
+                lng: longitude
+            }
+        })
     }
 }
