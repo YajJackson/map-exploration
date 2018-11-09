@@ -4,9 +4,11 @@ window.init = _ => {
     console.log('google maps loaded');
     let map;
     let centerMarker;
+    let placeMarker;
+    let placeDirectionLine;
     const clickMarkers = [];
-    const searchedPlaced = [];
     const geocoder = new google.maps.Geocoder();
+    const directionService = new google.maps.DirectionsService();
 
     class CustomMarker extends google.maps.OverlayView {
         /*
@@ -114,16 +116,23 @@ window.init = _ => {
                         address: result[0].formatted_address,
                         position: result[0].geometry.location
                     }
-                    if (searchedPlaced.some(p => p.address == place.address)) throw 'That place has already been added'
-                    searchedPlaced.push({
-                        ...place,
-                        marker: new google.maps.Marker({
+                    getRoute(centerMarker.position, place.position).then(({ routes }) => {
+                        const route = routes[0];
+                        if (!route) throw 'Could not get directions to that place'
+                        if (placeMarker) placeMarker.setMap(null)
+                        if (placeDirectionLine) placeDirectionLine.setMap(null)
+
+                        placeMarker = new google.maps.Marker({
                             position: place.position,
                             map: map
                         })
+                        placeDirectionLine = new google.maps.Polyline({
+                            path: route.overview_path,
+                            map: map
+                        })
+
+                        map.fitBounds(route.bounds)
                     })
-                    console.log('%cSuccessfully added place:', 'color: lightgreen', { place })
-                    map.panTo(place.position)
                 } catch (e) {
                     console.error(`Error adding place '${searchInput.value}':`, e)
                 }
@@ -131,4 +140,21 @@ window.init = _ => {
             }
         )
     })
+
+    /*
+    @placeA: google.maps.LatLng()
+    @placeB: google.maps.LatLng()
+    */
+    function getRoute (placeA, placeB) {
+        return new Promise(resolve =>
+            directionService.route(
+                {
+                    origin: placeA,
+                    destination: placeB,
+                    travelMode: 'DRIVING'
+                },
+                result => resolve(result)
+            )
+        )
+    }
 }
