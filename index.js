@@ -122,7 +122,7 @@ window.init = _ => {
                             map: map
                         })
                     })
-                    console.log('Successfully added place:', { place })
+                    console.log('%cSuccessfully added place:', 'color: lightgreen', { place })
                 } catch (e) {
                     console.error(`Error adding place '${searchInput.value}':`, e)
                 }
