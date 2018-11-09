@@ -1,3 +1,5 @@
+// Build your own here: https://mapstyle.withgoogle.com/
+// Find inspiration here: https://snazzymaps.com/
 export default [
   {
       "elementType": "labels",
