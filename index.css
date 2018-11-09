@@ -46,10 +46,27 @@ body {
     outline: none;
 }
 
+/* custom marker style */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 #d4ecfa, 0 0 0 0 #097ae4; }
+    70% { box-shadow: 0 0 0 50px #d4ecfa00, 0 0 0 50px #097ae400; }
+    100% { box-shadow: 0 0 0 50px #d4ecfa00, 0 0 0 50px #097ae400; }
+}
+.pulse {
+    animation: pulse 1.5s infinite;
+}
+#user-position-marker {
+    position: absolute;
+    height: 16px;
+    width: 16px;
+    background: #097ae4;
+    border-radius: 50%;
+    z-index: 99999;
+}
+
 /* hide google maps footer */
 a[href^="http://maps.google.com/maps"]{display:none !important}
 a[href^="https://maps.google.com/maps"]{display:none !important}
-
 .gmnoprint a, .gmnoprint span, .gm-style-cc {
     display:none;
 }
