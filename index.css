@@ -45,3 +45,14 @@ body {
 #address-search-input:focus {
     outline: none;
 }
+
+/* hide google maps footer */
+a[href^="http://maps.google.com/maps"]{display:none !important}
+a[href^="https://maps.google.com/maps"]{display:none !important}
+
+.gmnoprint a, .gmnoprint span, .gm-style-cc {
+    display:none;
+}
+.gmnoprint div {
+    background:none !important;
+}

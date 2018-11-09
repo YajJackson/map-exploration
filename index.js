@@ -1,3 +1,5 @@
+import MapStyles from './MapStyles';
+
 window.init = _ => {
     console.log('google maps loaded');
     let map;
@@ -25,6 +27,7 @@ window.init = _ => {
             },
             zoom: 13,
             disableDefaultUI: true,
+            styles: MapStyles
         });
 
         map.addListener('click', ({ latLng }) =>
