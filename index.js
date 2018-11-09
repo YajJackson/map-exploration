@@ -123,6 +123,7 @@ window.init = _ => {
                         })
                     })
                     console.log('%cSuccessfully added place:', 'color: lightgreen', { place })
+                    map.panTo(place.position)
                 } catch (e) {
                     console.error(`Error adding place '${searchInput.value}':`, e)
                 }
