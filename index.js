@@ -8,6 +8,47 @@ window.init = _ => {
     const searchedPlaced = [];
     const geocoder = new google.maps.Geocoder();
 
+    class CustomMarker extends google.maps.OverlayView {
+        /*
+        @map:         google.maps.Map to attach the marker
+        @position:    google latLng literal
+        @params.html: html template literal
+        @params.id:   the id of the root element
+        */
+        constructor (map, position, params) {
+            // since we are inheriting from OverlayView we must call super()
+            super();
+            this.position = position
+            this.params = params
+            this.setMap(map)
+        }
+
+        draw () {
+            let point = this.getProjection().fromLatLngToDivPixel(this.position)
+            // getProjection -> mapCanvasProjection
+            // mapCanvasProjection.fromLatLngToDivPixel ->
+            // Computes the pixel coordinates of the given geographical location in the DOM element that holds the draggable map.
+
+            if (!this.div) {
+                this.div = document.createElement('div')
+                this.div.id = this.params.id
+                this.div.innerHTML = this.params.html;
+                this.div.className = 'marker'
+                this.div.style.position = 'absolute'
+                this.getPanes().overlayImage.appendChild(this.div)
+            }
+
+            if (point && this.div) {
+                this.div.style.left = `${point.x}px`
+                this.div.style.top = `${point.y}px`
+            }
+        }
+
+        onRemove () {
+            document.getElementById(this.id).remove()
+        }
+    }
+
     getUserLocation().then(
         ({ coords }) => createMap(coords), // resolve
         err => console.error('Error getting user location: ', err) // reject
@@ -39,13 +80,14 @@ window.init = _ => {
             )
         )
 
-        centerMarker = new google.maps.Marker({
-            map: map,
-            position: {
-                lat: latitude,
-                lng: longitude
+        centerMarker = new CustomMarker(
+            map,
+            new google.maps.LatLng(latitude, longitude),
+            {
+                id: 'user-location-marker',
+                html: `<div id='user-position-marker' class='pulse'></div>`
             }
-        })
+        )
     }
 
     document.getElementById('clear-markers-button').addEventListener('click', _ =>
