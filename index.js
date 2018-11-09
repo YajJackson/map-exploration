@@ -6,12 +6,12 @@ window.init = _ => {
 
     getUserLocation().then(
         ({ coords }) => createMap(coords), // resolve
-        err => console.error('This browser does not support geolocation: ', err) // reject
+        err => console.error('Error getting user location: ', err) // reject
     )
 
     function getUserLocation () {
         return new Promise((res, rej) => {
-            navigator.geolocation.getCurrentPosition(res, rej);
+            navigator.geolocation.getCurrentPosition(res, rej, {timeout: 10000});
         });
     }
 
@@ -42,4 +42,12 @@ window.init = _ => {
             }
         })
     }
+
+    document.getElementById('clear-markers-button').addEventListener('click', _ =>
+        clickMarkers
+            // removes all the markers from the array, returns the markers that were removed
+            .splice(0, clickMarkers.length)
+            // tells the map that it doesn't need to continue rendering the markers
+            .forEach(marker => marker.setMap(null))
+    )
 }
