@@ -1,0 +1,16 @@
+<head>
+    <title>Map</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="content">
+        <div id="map"></div>
+        <form id="address-search-form">
+            <input id="address-search-input" type="text" placeholder="Search for a place" autocomplete="off" required>
+        </form>
+        <button id="clear-markers-button">Clear Markers</button>
+    </div>
+
+    <script src="index.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRyiNUqJOyZtgWBDYPB5sfeQRLvJmfPO0&callback=init" async defer></script>
+</body>
